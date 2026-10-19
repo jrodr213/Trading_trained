@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "local-market-env"
+version = "0.1.0"
+description = "Delayed SIP data and local, single-session stock-market experiments"
+requires-python = ">=3.11"
+dependencies = ["alpaca-py==0.44.0", "gymnasium>=1.2,<2", "pandas-market-calendars>=5,<6", "numpy>=2,<3", "python-dotenv>=1,<2"]
+
+[project.optional-dependencies]
+test = ["pytest>=8,<10"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+cache_dir = ".cache/pytest"

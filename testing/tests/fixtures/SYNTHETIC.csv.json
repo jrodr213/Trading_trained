@@ -1,0 +1,41 @@
+{
+  "symbols": [
+    "KO",
+    "JPM",
+    "IBM"
+  ],
+  "interval_minutes": 1,
+  "provider": "SYNTHETIC",
+  "feed": "SYNTHETIC",
+  "adjustment": "raw",
+  "retrieved_at": "2026-09-02T00:00:00+00:00",
+  "requested_start": "2026-09-01T13:30:00+00:00",
+  "requested_end": "2026-09-01T13:38:00+00:00",
+  "effective_start": "2026-09-01T13:30:00+00:00",
+  "effective_end": "2026-09-01T13:38:00+00:00",
+  "coverage": {
+    "KO": {
+      "bars": 8,
+      "first": "2026-09-01 13:30:00+00:00",
+      "last": "2026-09-01 13:37:00+00:00",
+      "missing_expected_bars": 0,
+      "gap_examples": []
+    },
+    "JPM": {
+      "bars": 8,
+      "first": "2026-09-01 13:30:00+00:00",
+      "last": "2026-09-01 13:37:00+00:00",
+      "missing_expected_bars": 0,
+      "gap_examples": []
+    },
+    "IBM": {
+      "bars": 8,
+      "first": "2026-09-01 13:30:00+00:00",
+      "last": "2026-09-01 13:37:00+00:00",
+      "missing_expected_bars": 0,
+      "gap_examples": []
+    }
+  },
+  "version": 1,
+  "sha256": "817e77eb563718e9282144d9b5e87695feba07ee8ac2a396ae578fd72d834b5d"
+}

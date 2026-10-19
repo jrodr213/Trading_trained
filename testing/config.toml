@@ -1,0 +1,17 @@
+symbols = ["KO", "JPM", "IBM"]
+interval_minutes = 1
+delay_minutes = 15
+safety_buffer_seconds = 30
+poll_interval_seconds = 30
+overlap_minutes = 2
+timeout_seconds = 15
+requests_per_minute = 120
+max_retries = 3
+initial_cash = "100000.00"
+fee_per_order = "0.00"
+fee_per_share = "0.00"
+slippage_bps = "0"
+max_order_shares = 1000
+stale_tolerance_seconds = 120
+data_dir = "data"
+runs_dir = "runs"

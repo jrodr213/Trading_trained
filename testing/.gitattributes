@@ -1,0 +1,2 @@
+# Dataset identities hash exact bytes; use LF on every OS.
+*.csv text eol=lf
