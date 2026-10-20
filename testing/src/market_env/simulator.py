@@ -34,6 +34,7 @@ class Simulator:
         self.holdings = dict.fromkeys(config.symbols, 0)
         self.book_cost = dict.fromkeys(config.symbols, Decimal(0))
         self.prices: dict[str, Decimal] = {}
+        self.volumes: dict[str, Decimal] = {}
         self.realized = Decimal(0)
         self.fees = Decimal(0)
         self.slippage_cost = Decimal(0)
@@ -59,7 +60,8 @@ class Simulator:
 
     def execution_price(self, raw, side):
         direction = 1 if side == "buy" else -1
-        return money(raw * (1 + direction * Decimal(self.config.slippage_bps) / 10000))
+        return (raw * (1 + direction * Decimal(self.config.slippage_bps) / 10000)).quantize(
+            Decimal(self.config.execution_price_tick), rounding=ROUND_HALF_UP)
 
     def submit(self, symbol: str, side: str, quantity: int, at: datetime | None,
                allowed: bool, client_order_id: str | None = None) -> Order:
@@ -113,16 +115,21 @@ class Simulator:
 
     def process_open(self, bar: Bar):
         # Call BEFORE marking the completed bar or exposing any of its OHLCV.
+        prior_volume = self.volumes.get(bar.symbol, Decimal("NaN"))
+        capacity = (int(prior_volume * Decimal(self.config.yahoo_volume_participation))
+                    if prior_volume.is_finite() and prior_volume > 0 else 0)
         for order in self.orders.values():
             if order.status != "pending" or order.symbol != bar.symbol:
                 continue
+            if self.config.provider == "yahoo" and order.quantity > capacity:
+                continue  # Capacity uses previous observed volume, never this bar's future volume.
             if order.submitted_at is None or bar.start < order.submitted_at:
                 continue
             price = self.execution_price(bar.open, order.side)
             gross, fee = money(price * order.quantity), self.fee(order.quantity)
             own_reserve = order.reserved_cash
             reason = ""
-            if price <= 0:
+            if price <= 0 or gross <= 0:
                 reason = "execution price rounds to zero"
             elif order.side == "buy" and gross + fee > self.available_cash + own_reserve:
                 reason = "opening gap unaffordable; whole order rejected"
@@ -152,7 +159,12 @@ class Simulator:
             fill = {"order_id": order.id, "symbol": bar.symbol, "side": order.side,
                     "quantity": int(order.quantity), "price": price, "fee": fee,
                     "slippage_cost": slippage, "market_time": bar.start, "wall_time": self.clock.now()}
+            if self.config.provider == "yahoo":
+                fill["execution_quality"] = "ESTIMATED OHLCV FILL; not a verified exchange execution"
+                fill["volume_warning"] = "low previously observed volume; no liquidity guarantee" if prior_volume < self.config.low_volume_threshold else None
             self.fills.append(fill)
+            if self.config.provider == "yahoo":
+                capacity -= order.quantity
             self.event("filled", bar.start, **{k: v for k, v in fill.items() if k not in ("market_time", "wall_time")})
             assert self.cash >= 0 and self.available_cash >= 0 and self.holdings[bar.symbol] >= 0
 

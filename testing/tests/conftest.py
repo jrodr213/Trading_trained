@@ -14,3 +14,5 @@ def offline(monkeypatch):
     def blocked(*args, **kwargs):
         raise AssertionError("Tests may not access the network")
     monkeypatch.setattr(requests.Session, "request", blocked)
+    from curl_cffi.requests import Session
+    monkeypatch.setattr(Session, "request", blocked)

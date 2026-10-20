@@ -1,22 +1,32 @@
 # Verified on Python 3.12; includes build and test dependencies.
 alpaca-py==0.44.0
 annotated-types==0.8.0
+beautifulsoup4==4.15.0
 certifi==2026.10.18
+cffi==2.1.1
 charset-normalizer==3.5.2
 cloudpickle==3.1.2
 colorama==0.4.6
+curl_cffi==0.16.3
 exchange_calendars==4.13.2
 Farama-Notifications==0.0.6
 gymnasium==1.4.0
 idna==3.20
 iniconfig==2.3.1
 korean_lunar_calendar==0.4.0
+lxml==6.1.3
 msgpack==1.2.3
+multitasking==0.0.13
 numpy==2.5.4
 packaging==26.3
 pandas==3.0.6
 pandas_market_calendars==5.5.0
+peewee==4.5.3
+platformdirs==4.13.5
 pluggy==1.7.0
+protobuf==7.36.2
+pyarrow==26.0.0
+pycparser==3.11
 pydantic==2.14.1
 pydantic_core==2.50.1
 Pygments==2.21.0
@@ -28,6 +38,7 @@ pytz==2026.5
 requests==2.34.2
 setuptools==84.0.0
 six==1.17.0
+soupsieve==3.0.3
 sseclient-py==1.9.0
 toolz==1.2.0
 typing-inspection==0.4.4
@@ -36,3 +47,4 @@ tzdata==2026.5
 urllib3==2.8.0
 websockets==17.3
 wheel==0.48.0
+yfinance==1.7.0

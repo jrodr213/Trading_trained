@@ -1,4 +1,12 @@
 symbols = ["KO", "JPM", "IBM"]
+provider = "alpaca"
+yahoo_interval = "1d"
+yahoo_poll_interval_seconds = 120
+yahoo_requests_per_minute = 10
+yahoo_backoff_seconds = 120
+yahoo_execution_price_tick = "0.000001"
+yahoo_volume_participation = "0.10"
+low_volume_threshold = 1000
 interval_minutes = 1
 delay_minutes = 15
 safety_buffer_seconds = 30

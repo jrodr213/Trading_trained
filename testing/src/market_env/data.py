@@ -217,11 +217,15 @@ class AlpacaProvider:
 def write_dataset(path: Path, bars, metadata: dict):
     path.parent.mkdir(parents=True, exist_ok=True)
     fields = list(Bar.__dataclass_fields__)
-    with path.open("w", newline="", encoding="utf-8") as handle:
-        writer = csv.DictWriter(handle, fields, lineterminator="\n")
-        writer.writeheader()
-        writer.writerows(b.row() for b in bars)
-    metadata = {**metadata, "version": 1, "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+    if path.suffix == ".parquet":
+        import pandas as pd
+        pd.DataFrame([b.row() for b in bars], columns=fields).to_parquet(path, index=False)
+    else:
+        with path.open("w", newline="", encoding="utf-8") as handle:
+            writer = csv.DictWriter(handle, fields, lineterminator="\n")
+            writer.writeheader()
+            writer.writerows(b.row() for b in bars)
+    metadata = {**metadata, "version": metadata.get("version", 1), "sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
     path.with_suffix(path.suffix + ".json").write_text(json.dumps(metadata, indent=2), encoding="utf-8")
     return metadata
 
@@ -229,6 +233,9 @@ def write_dataset(path: Path, bars, metadata: dict):
 def load_dataset(path: Path):
     try:
         meta = json.loads(path.with_suffix(path.suffix + ".json").read_text(encoding="utf-8"))
+        if meta.get("provider") == "Yahoo":
+            from .yahoo import load_yahoo_dataset
+            return load_yahoo_dataset(path, meta)
         required = {"version", "sha256", "symbols", "interval_minutes", "provider", "feed", "adjustment",
                     "retrieved_at", "requested_start", "requested_end", "effective_start", "effective_end", "coverage"}
         if not required <= meta.keys() or meta["version"] != 1:
